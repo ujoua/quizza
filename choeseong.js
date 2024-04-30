@@ -23,10 +23,8 @@ const checkAnswer = (event) => {
     event.preventDefault();
     const user_answer = document.getElementById("user_answer");
     if (encodeURI(user_answer.value) != cur_qna.answer) {
-        console.log("땡");
     }
     else {
-        console.log("정답");
         showQuestion();
     }
 

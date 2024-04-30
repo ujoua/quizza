@@ -5,6 +5,10 @@ body {
     padding: 0;
 }
 
+header {
+    text-align: center;
+}
+
 main {
     height: 80%;
     display: grid;
@@ -18,8 +22,5 @@ main {
     width: 90%;
     height: 100%;
     overflow: scroll;
-}
-
-div {
     border: 1px solid black;
 }
