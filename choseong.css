@@ -14,6 +14,12 @@ main {
     gap: 10px;
 }
 
+#chat {
+    width: 90%;
+    height: 100%;
+    overflow: scroll;
+}
+
 div {
     border: 1px solid black;
 }

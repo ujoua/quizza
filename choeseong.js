@@ -29,6 +29,10 @@ const checkAnswer = (event) => {
         console.log("정답");
         showQuestion();
     }
+
+    const chat = document.getElementById("chat");
+    chat.innerText += user_answer.value + "\n";
+    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
     user_answer.value = "";
 }
 
