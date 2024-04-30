@@ -1,0 +1,19 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    height: 80%;
+    display: grid;
+    grid-template-rows: 2fr 2fr 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 10px;
+}
+
+div {
+    border: 1px solid black;
+}
