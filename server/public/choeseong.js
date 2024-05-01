@@ -13,10 +13,10 @@ const qnas = [
     { "question": "ㄲㄲㅋ", "answer": "%EA%BC%AC%EA%B9%94%EC%BD%98" },
 ];
 
-let cur_qna;
+let cur_qna = { "question": "시작", "answer": encodeURI("시작") };
 
-const showQuestion = () => {
-    cur_qna = qnas[Math.floor(Math.random() * 10)];
+const showQuestion = (idx) => {
+    cur_qna = qnas[idx];
     const question = document.getElementById("question");
     question.innerText = cur_qna.question;
 }
@@ -30,11 +30,14 @@ const checkAnswer = (event) => {
     }
     else {
         socket.emit('answer message', user_answer.value);
-        showQuestion();
     }
 
     user_answer.value = "";
 }
+
+socket.on('system message', (idx) => {
+    showQuestion(idx);
+})
 
 const chat = document.getElementById("chat");
 socket.on('chat message', (message) => {
@@ -42,5 +45,4 @@ socket.on('chat message', (message) => {
     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 })
 
-window.onload = showQuestion;
 const answer_form = document.getElementById("answer_form").addEventListener("submit", checkAnswer);

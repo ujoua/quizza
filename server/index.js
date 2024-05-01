@@ -31,6 +31,12 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
     });
 
+    socket.on('answer message', (message) => {
+        io.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
+        io.to(roomId).emit('chat message', `[${nickname}]님이 정답을 맞혔습니다.`);
+        io.to(roomId).emit('system message', Math.floor(Math.random() * 10));
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
