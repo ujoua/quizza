@@ -8,12 +8,22 @@
 </head>
 
 <body>
-    <h1>퀴자</h1>
-    <form action="/choseong" method="post">
-        <input type="text" name="nickname" placeholder="별명" />
-        <button type="submit">시작</button>
-    </form>
-    <!-- <a href="choseong.html">초성 퀴즈 시작</a> -->
+    <header>
+        <h1>초성 퀴즈</h1>
+    </header>
+    <main>
+        <form action="/lobby" method="post">
+            <input type="text" name="nickname" placeholder="별명" />
+            <button type="submit">시작</button>
+        </form>
+    </main>
+
+    <script>
+        if (document.URL.includes('roomId')) {
+            const form = document.getElementsByTagName('form')[0];
+            form.action = document.URL.replace('index', 'lobby');
+        }
+    </script>
 </body>
 
 </html>
