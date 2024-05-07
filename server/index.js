@@ -45,15 +45,21 @@ app.post('/lobby', (req, res) => {
     res.cookie('nickname', nickname);
 
     if (!req.query.roomId) {
+        res.cookie('captain', 1);
         const roomId = uuidv4();
         res.redirect(`/lobby?roomId=${roomId}`);
     }
+    res.cookie('captain', 1);
     res.redirect(`/lobby?roomId=${req.query.roomId}`);
 });
 
 app.get('/lobby', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'lobby.html'));
 });
+
+app.get('/choseong', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'choseong.html'));
+})
 
 io.of('/lobby').on('connection', (socket) => {
     console.log('a user connected');
@@ -74,6 +80,10 @@ io.of('/lobby').on('connection', (socket) => {
     room[socket.id] = nickname;
 
     socket.nsp.to(roomId).emit('players', rooms[roomId]); // https://github.com/socketio/socket.io/issues/3449
+
+    socket.on('start', () => {
+        socket.nsp.to(roomId).emit('start');
+    })
 
     // socket.on('chat message', (message) => {
     //     io.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
