@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io('/choseong');
 
 const qnas = [
     { "question": "ㅅㅇㄲ", "answer": "%EC%83%88%EC%9A%B0%EA%B9%A1" },
@@ -13,7 +13,7 @@ const qnas = [
     { "question": "ㄲㄲㅋ", "answer": "%EA%BC%AC%EA%B9%94%EC%BD%98" },
 ];
 
-let cur_qna = { "question": "시작", "answer": encodeURI("시작") };
+let cur_qna = {};
 
 const showQuestion = (idx) => {
     cur_qna = qnas[idx];
@@ -35,14 +35,20 @@ const checkAnswer = (event) => {
     user_answer.value = "";
 }
 
-socket.on('system message', (idx) => {
+socket.on('question message', (idx) => {
     showQuestion(idx);
 })
 
 const chat = document.getElementById("chat");
 socket.on('chat message', (message) => {
+    console.log('chat');
     chat.innerText += message + "\n";
     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 })
 
-const answer_form = document.getElementById("answer_form").addEventListener("submit", checkAnswer);
+const answer_form = document.getElementById("answer_form");
+answer_form.addEventListener("submit", checkAnswer);
+
+socket.on('login', () => {
+    window.location.replace(document.URL.replace('choseong', 'index'));
+})

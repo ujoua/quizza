@@ -22,10 +22,13 @@ function getCookie(name) {
 }
 
 const captain = getCookie('captain');
+const roomId = getCookie('roomId');
+
+const urlParams = new URLSearchParams(window.location.search);
 
 const start_button = document.getElementById("start");
 
-if (captain == 1) {
+if (captain == 1 && roomId == urlParams.get('roomId')) {
     start_button.addEventListener('click', () => {
         socket.emit('start');
     })
@@ -36,5 +39,5 @@ socket.on('login', () => {
 })
 
 socket.on('start', () => {
-    window.location.replace('/choseong');
+    window.location.replace(document.URL.replace('lobby', 'choseong'));
 })

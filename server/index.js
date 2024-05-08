@@ -45,12 +45,13 @@ app.post('/lobby', (req, res) => {
     res.cookie('nickname', nickname);
 
     if (!req.query.roomId) {
-        res.cookie('captain', 1);
         const roomId = uuidv4();
-        res.redirect(`/lobby?roomId=${roomId}`);
+        res.cookie('captain', 1);
+        res.cookie('roomId', roomId);
+        return res.redirect(`/lobby?roomId=${roomId}`);
     }
     res.cookie('captain', 0);
-    res.redirect(`/lobby?roomId=${req.query.roomId}`);
+    return res.redirect(`/lobby?roomId=${req.query.roomId}`);
 });
 
 app.get('/lobby', (req, res) => {
@@ -87,18 +88,8 @@ io.of('/lobby').on('connection', (socket) => {
     socket.nsp.to(roomId).emit('players', rooms[roomId]); // https://github.com/socketio/socket.io/issues/3449
 
     socket.on('start', () => {
-        socket.nsp.to(roomId).emit('start');
-    })
-
-    // socket.on('chat message', (message) => {
-    //     io.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
-    // });
-
-    // socket.on('answer message', (message) => {
-    //     io.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
-    //     io.to(roomId).emit('chat message', `[${nickname}]님이 정답을 맞혔습니다.`);
-    //     io.to(roomId).emit('system message', Math.floor(Math.random() * 10));
-    // });
+        io.of('/lobby').to(roomId).emit('start');
+    });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
@@ -107,6 +98,33 @@ io.of('/lobby').on('connection', (socket) => {
     });
 });
 
+io.of('/choseong').on('connection', (socket) => {
+    if (!socket.handshake.headers.cookie) {
+        socket.emit('login');
+        return;
+    }
+
+    const url = new URL(socket.handshake.headers.referer);
+    const params = url.searchParams;
+    const roomId = params.get('roomId');
+
+    socket.join(roomId);
+
+    const cookies = parse(socket.handshake.headers.cookie);
+    const nickname = cookies.nickname;
+
+    socket.nsp.to(roomId).emit('question message', Math.floor(Math.random() * 10));
+
+    socket.on('chat message', (message) => {
+        socket.nsp.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
+    });
+
+    socket.on('answer message', (message) => {
+        socket.nsp.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
+        socket.nsp.to(roomId).emit('chat message', `[${nickname}]님이 정답을 맞혔습니다.`);
+        socket.nsp.to(roomId).emit('question message', Math.floor(Math.random() * 10));
+    });
+})
 
 server.listen(3000, () => { // 이거 server를 app으로 바꿨다간 GET http://localhost:3000/socket.io/socket.io.js net::ERR_ABORTED 404 (Not Found) 오류 발생함.
     console.log('listening on *:3000');
