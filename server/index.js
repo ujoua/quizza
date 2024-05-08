@@ -113,8 +113,6 @@ io.of('/choseong').on('connection', (socket) => {
     const cookies = parse(socket.handshake.headers.cookie);
     const nickname = cookies.nickname;
 
-    socket.nsp.to(roomId).emit('question message', Math.floor(Math.random() * 10));
-
     socket.on('chat message', (message) => {
         socket.nsp.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
     });
@@ -122,7 +120,7 @@ io.of('/choseong').on('connection', (socket) => {
     socket.on('answer message', (message) => {
         socket.nsp.to(roomId).emit('chat message', `[${nickname}]: ${message}`);
         socket.nsp.to(roomId).emit('chat message', `[${nickname}]님이 정답을 맞혔습니다.`);
-        socket.nsp.to(roomId).emit('question message', Math.floor(Math.random() * 10));
+        socket.nsp.to(roomId).emit('question message', Math.floor(Math.random() * 100 % 10));
     });
 })
 

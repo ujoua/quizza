@@ -41,7 +41,6 @@ socket.on('question message', (idx) => {
 
 const chat = document.getElementById("chat");
 socket.on('chat message', (message) => {
-    console.log('chat');
     chat.innerText += message + "\n";
     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 })
@@ -52,3 +51,18 @@ answer_form.addEventListener("submit", checkAnswer);
 socket.on('login', () => {
     window.location.replace(document.URL.replace('choseong', 'index'));
 })
+
+window.onload = () => {
+    function getCookie(name) {
+        let matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? matches[1] : undefined;
+    }
+    const captain = getCookie('captain');
+    const roomId = getCookie('roomId');
+    const urlParams = new URLSearchParams(window.location.search);
+    if (captain == 1 && roomId == urlParams.get('roomId')) {
+        socket.emit('answer message', '문제');
+    }
+}
