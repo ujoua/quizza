@@ -49,7 +49,7 @@ app.post('/lobby', (req, res) => {
         const roomId = uuidv4();
         res.redirect(`/lobby?roomId=${roomId}`);
     }
-    res.cookie('captain', 1);
+    res.cookie('captain', 0);
     res.redirect(`/lobby?roomId=${req.query.roomId}`);
 });
 
@@ -62,6 +62,11 @@ app.get('/choseong', (req, res) => {
 })
 
 io.of('/lobby').on('connection', (socket) => {
+    if (!socket.handshake.headers.cookie) {
+        socket.emit('login');
+        return;
+    }
+
     console.log('a user connected');
 
     const url = new URL(socket.handshake.headers.referer);

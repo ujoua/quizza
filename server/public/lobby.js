@@ -31,6 +31,10 @@ if (captain == 1) {
     })
 }
 
+socket.on('login', () => {
+    window.location.replace(document.URL.replace('lobby', 'index'));
+})
+
 socket.on('start', () => {
     window.location.replace('/choseong');
 })
